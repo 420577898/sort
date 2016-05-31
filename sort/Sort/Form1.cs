@@ -289,6 +289,7 @@ namespace Sort
 
         void InitParam()
         {
+            ShowMsg("InitParam");
             step = Step.One;
             isProcessOk = true;
             this.page = 1;
@@ -406,6 +407,7 @@ namespace Sort
                                     this.page++;
                                     if (this.page > 5)
                                     {
+                                        Disconn();
                                         InitParam();
                                         return;
                                     }
