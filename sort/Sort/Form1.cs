@@ -121,6 +121,8 @@ namespace Sort
                                     System.Threading.Thread.Sleep(1000);
                                     continue;
                                 }
+                                this.textBox2.Text = string.Empty;
+                                ShowMsg("whileprocess");
                                 isProcessOk = false;
                                 break;
                             }
@@ -137,7 +139,6 @@ namespace Sort
                             {
                                 if (isConn == false)
                                 {
-                                    this.textBox2.Text = string.Empty;
                                     ShowMsg("拨号中---" + keyword.kw);
                                     Dial();
                                     System.Threading.Thread.Sleep(1000);
@@ -289,7 +290,6 @@ namespace Sort
 
         void InitParam()
         {
-            ShowMsg("InitParam");
             step = Step.One;
             isProcessOk = true;
             this.page = 1;
