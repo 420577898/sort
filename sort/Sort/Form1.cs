@@ -286,6 +286,11 @@ namespace Sort
                 FindCurrnt();
                 return;
             }
+
+            if (step == Step.Three)
+            {
+                StepThree();
+            }
         }
 
         void InitParam()
@@ -300,7 +305,7 @@ namespace Sort
             ShowMsg("Init");
             var action = new Action(delegate()
             {
-                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
+                System.Threading.Thread.Sleep(ran.Next(2, 4) * 1000);
                 if (this.wb.InvokeRequired)
                 {
                     this.wb.Invoke(new Action(delegate()
@@ -326,7 +331,7 @@ namespace Sort
             {
                 var action = new Action(delegate()
                 {
-                    System.Threading.Thread.Sleep(ran.Next(3, 6) * 1000);
+                    System.Threading.Thread.Sleep(ran.Next(2, 5) * 1000);
                     if (this.wb.InvokeRequired)
                     {
                         this.wb.Invoke(new Action(delegate()
@@ -353,7 +358,7 @@ namespace Sort
                                             if (keyword.total > 0)
                                             {
                                                 HtmlElement divParent = el.Parent.Parent;
-                                                VisitWgif(divParent, doc);
+                                                VisitWgif(divParent,el, doc);
                                             }
 #if !DEBUG
                                             else
@@ -389,7 +394,7 @@ namespace Sort
             ShowMsg("Page");
             var action = new Action(delegate()
             {
-                System.Threading.Thread.Sleep(ran.Next(3, 6) * 1000);
+                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
                 if (this.wb.InvokeRequired)
                 {
                     this.wb.Invoke(new Action(delegate()
@@ -423,7 +428,22 @@ namespace Sort
             action.BeginInvoke(null, null);
         }
 
-        void VisitWgif(HtmlElement el, HtmlDocument doc)
+        void StepThree()
+        { 
+            var action = new Action(delegate()
+            {
+                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
+                keyword.total--;
+                keyword.showcount--;
+                Disconn();
+                InitParam();
+
+                ShowMsg(string.Format("{3}，剩余刷 {0} 次，剩余展示 {1} 次，总共 {2} 次", keyword.total, keyword.showcount, count, keyword.kw));
+            });
+            action.BeginInvoke(null, null);
+        }
+
+        void VisitWgif(HtmlElement el,HtmlElement currentEl, HtmlDocument doc)
         {
             try
             {
@@ -484,12 +504,10 @@ namespace Sort
                     http.CookieContainer.Add(cookies);
                     http.GetHtml(pm.url);
 
-                    keyword.total--;
-                    keyword.showcount--;
-                    Disconn();
-                    InitParam();
+                    currentEl.InvokeMember("click");
 
-                    ShowMsg(string.Format("{3}，剩余刷 {0} 次，剩余展示 {1} 次，总共 {2} 次", keyword.total, keyword.showcount, count, keyword.kw));
+                    step = Step.Three;
+                    
                 });
                 gifAction.BeginInvoke(null, null);
             }
