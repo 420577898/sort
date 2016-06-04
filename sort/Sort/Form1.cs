@@ -23,6 +23,7 @@ namespace Sort
         int count = 0;
         Step step = Step.One;
         bool isProcessOk = true;
+        object isProcessOkObj = new object();
 
         string kwPath = AppDomain.CurrentDomain.BaseDirectory + "kw.txt";
         List<Keyword> list = new List<Keyword>();
@@ -30,6 +31,7 @@ namespace Sort
         Keyword keyword = null;
 
         bool isConn = false;
+        object isConnObj = new object();
 
         /// <summary>
         /// Defines the name of the entry being used by the example.
@@ -116,15 +118,18 @@ namespace Sort
                         {
                             while (true)
                             {
-                                if (isProcessOk == false)
+                                lock (isProcessOkObj)
                                 {
-                                    System.Threading.Thread.Sleep(1000);
-                                    continue;
+                                    if (isProcessOk == false)
+                                    {
+                                        System.Threading.Thread.Sleep(1000);
+                                        continue;
+                                    }
+                                    this.textBox2.Text = string.Empty;
+                                    ShowMsg("whileprocess");
+                                    isProcessOk = false;
+                                    break;
                                 }
-                                this.textBox2.Text = string.Empty;
-                                ShowMsg("whileprocess");
-                                isProcessOk = false;
-                                break;
                             }
                             keyword = item;
                             if (keyword.showcount <= 0)
@@ -137,14 +142,17 @@ namespace Sort
 
                             while (true)
                             {
-                                if (isConn == false)
+                                lock (isConnObj)
                                 {
-                                    ShowMsg("拨号中---" + keyword.kw);
-                                    Dial();
-                                    System.Threading.Thread.Sleep(1000);
-                                    continue;
+                                    if (isConn == false)
+                                    {
+                                        ShowMsg("拨号中---" + keyword.kw);
+                                        Dial();
+                                        System.Threading.Thread.Sleep(1000);
+                                        continue;
+                                    }
+                                    break;
                                 }
-                                break;
                             }
 #endif
                             if (this.InvokeRequired)
@@ -219,7 +227,7 @@ namespace Sort
                 if (this.Dialer.IsBusy)
                     return;
                 // Set the credentials the dialer should use.
-                this.Dialer.Credentials = new NetworkCredential("99392214", "123456");
+                this.Dialer.Credentials = new NetworkCredential("14ab1", "735435");
 
                 // NOTE: The entry MUST be in the phone book before the connection can be dialed.
                 // Begin dialing the connection; this will raise events from the dialer instance.
@@ -250,7 +258,10 @@ namespace Sort
                     connection.HangUp();
                 }
             }
-            isConn = false;
+            lock (isConnObj)
+            {
+                isConn = false;
+            }
 #endif
         }
 
@@ -261,13 +272,16 @@ namespace Sort
         /// <param name="e">An <see cref="DotRas.DialCompletedEventArgs"/> containing event data.</param>
         private void Dialer_DialCompleted(object sender, DialCompletedEventArgs e)
         {
-            if (e.Connected)
+            lock (isConnObj)
             {
-                isConn = true;
-            }
-            else
-            {
-                isConn = false;
+                if (e.Connected)
+                {
+                    isConn = true;
+                }
+                else
+                {
+                    isConn = false;
+                }
             }
         }
 
@@ -286,12 +300,20 @@ namespace Sort
                 FindCurrnt();
                 return;
             }
+
+            if (step == Step.Three)
+            {
+                StepThree();
+            }
         }
 
         void InitParam()
         {
             step = Step.One;
-            isProcessOk = true;
+            lock (isProcessOkObj)
+            {
+                isProcessOk = true;
+            }
             this.page = 1;
         }
 
@@ -300,7 +322,7 @@ namespace Sort
             ShowMsg("Init");
             var action = new Action(delegate()
             {
-                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
+                System.Threading.Thread.Sleep(ran.Next(2, 4) * 1000);
                 if (this.wb.InvokeRequired)
                 {
                     this.wb.Invoke(new Action(delegate()
@@ -326,7 +348,7 @@ namespace Sort
             {
                 var action = new Action(delegate()
                 {
-                    System.Threading.Thread.Sleep(ran.Next(3, 6) * 1000);
+                    System.Threading.Thread.Sleep(ran.Next(2, 5) * 1000);
                     if (this.wb.InvokeRequired)
                     {
                         this.wb.Invoke(new Action(delegate()
@@ -353,7 +375,7 @@ namespace Sort
                                             if (keyword.total > 0)
                                             {
                                                 HtmlElement divParent = el.Parent.Parent;
-                                                VisitWgif(divParent, doc);
+                                                VisitWgif(divParent,el, doc);
                                             }
 #if !DEBUG
                                             else
@@ -389,7 +411,7 @@ namespace Sort
             ShowMsg("Page");
             var action = new Action(delegate()
             {
-                System.Threading.Thread.Sleep(ran.Next(3, 6) * 1000);
+                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
                 if (this.wb.InvokeRequired)
                 {
                     this.wb.Invoke(new Action(delegate()
@@ -423,7 +445,23 @@ namespace Sort
             action.BeginInvoke(null, null);
         }
 
-        void VisitWgif(HtmlElement el, HtmlDocument doc)
+        void StepThree()
+        {
+            ShowMsg("StepThree");
+            var action = new Action(delegate()
+            {
+                System.Threading.Thread.Sleep(ran.Next(3, 5) * 1000);
+                keyword.total--;
+                keyword.showcount--;
+                Disconn();
+                InitParam();
+
+                ShowMsg(string.Format("{3}，剩余刷 {0} 次，剩余展示 {1} 次，总共 {2} 次", keyword.total, keyword.showcount, count, keyword.kw));
+            });
+            action.BeginInvoke(null, null);
+        }
+
+        void VisitWgif(HtmlElement el,HtmlElement currentEl, HtmlDocument doc)
         {
             try
             {
@@ -484,12 +522,11 @@ namespace Sort
                     http.CookieContainer.Add(cookies);
                     http.GetHtml(pm.url);
 
-                    keyword.total--;
-                    keyword.showcount--;
-                    Disconn();
-                    InitParam();
+                    currentEl.SetAttribute("target", "_self");
+                    currentEl.InvokeMember("click");
 
-                    ShowMsg(string.Format("{3}，剩余刷 {0} 次，剩余展示 {1} 次，总共 {2} 次", keyword.total, keyword.showcount, count, keyword.kw));
+                    step = Step.Three;
+                    
                 });
                 gifAction.BeginInvoke(null, null);
             }
