@@ -281,11 +281,11 @@ namespace Sort
                 return;
             }
 
-            if (step == Step.Two)
-            {
-                FindCurrnt();
-                return;
-            }
+            //if (step == Step.Two)
+            //{
+            //    FindCurrnt();
+            //    return;
+            //}
         }
 
         void InitParam()
@@ -307,7 +307,8 @@ namespace Sort
                     {
                         HtmlDocument doc = wb.Document;
                         HtmlElement kw = doc.GetElementById("kw");
-                        HtmlElement su = doc.GetElementById("su");
+                        HtmlElement su = doc.GetElementById("su"); 
+                        //kw.Focus();
                         kw.InnerText = keyword.kw;
                         step = Step.Two;
                         su.InvokeMember("click");
