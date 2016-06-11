@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.ComponentModel;
 using System.Net;
 using DotRas;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Sort
 {
@@ -59,6 +59,8 @@ namespace Sort
 
             timer.Elapsed += timer_Elapsed;
             timer.AutoReset = false;
+
+            
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -100,26 +102,37 @@ namespace Sort
                         this.step = Step.One;
 #if !DEBUG
 
-                        //while (true)
-                        //{
-                        //    lock (isConnObj)
-                        //    {
-                        //        if (isConn == false)
-                        //        {
-                        //            Dial();
-                        //            System.Threading.Thread.Sleep(200);
-                        //            continue;
-                        //        }
-                        //    }
-                        //    break;
-                        //}
-                        if (isConn == false)
+                        while (true)
                         {
-                            Dial();
-                            //System.Threading.Thread.Sleep(200);
-                            //continue;
+                            lock (isConnObj)
+                            {
+                                if (isConn == false)
+                                {
+                                    Dial();
+                                    System.Threading.Thread.Sleep(200);
+                                    continue;
+                                }
+                            }
+                            break;
                         }
+                        //if (isConn == false)
+                        //{
+                        //    Dial();
+                        //    //System.Threading.Thread.Sleep(200);
+                        //    //continue;
+                        //}
 #endif
+
+                        try
+                        {
+                            string cookiePath = @"C:\Documents and Settings\Administrator\Cookies";
+                            DirectoryInfo dir = new DirectoryInfo(cookiePath);
+                            FileInfo[] files = dir.GetFiles("*.txt");
+                            foreach (FileInfo item in files)
+                                File.Delete(item.FullName);
+                        }
+                        catch { }
+
 
                         if (this.InvokeRequired)
                         {
@@ -364,7 +377,7 @@ namespace Sort
 
                     HttpHelper http = new HttpHelper();
                     System.Net.CookieCollection cookies = HttpHelper.StringToCookieCollection(pm.cookie, ".baidu.com");
-
+                    LogUtil.Write(pm.cookie);
                     http.CookieContainer.Add(cookies);
                     http.Referer = pm.path;
                     http.Accept = "image/webp,image/*,*/*;q=0.8";
@@ -403,7 +416,7 @@ namespace Sort
 
                 // NOTE: The entry MUST be in the phone book before the connection can be dialed.
                 // Begin dialing the connection; this will raise events from the dialer instance.
-                this.handle = this.Dialer.Dial();//.DialAsync();
+                this.handle = this.Dialer.DialAsync();
 
             }
             catch (Exception ex)
