@@ -23,7 +23,8 @@ namespace Sort
 
         public HttpHelper()
         {
-            this.UserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.2)";
+            //this.UserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.2)";
+            this.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36";
             this.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
             this.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             this.CookieContainer = new CookieContainer();
@@ -107,6 +108,8 @@ namespace Sort
         public string RequestHeader { get; private set; }
 
         public long ResponseContentLength { get; private set; }
+
+        public System.Net.CookieCollection Cookies { get; set; }
 
         #region 公共方法
 
@@ -409,6 +412,7 @@ namespace Sort
                 this.RequestHeader = this.RequestHeader.Trim('\r', '\n');
                 this.HttpHeader = this.HttpHeader.Trim('\r', '\n');
                 this.ResponseHeaders = httpWebResponse.Headers;
+                this.Cookies = httpWebResponse.Cookies;
 
                 CompressType = httpWebResponse.ContentEncoding.ToLower();
 

@@ -127,11 +127,21 @@ namespace Sort
                         {
                             string cookiePath = @"C:\Documents and Settings\Administrator\Cookies";
                             DirectoryInfo dir = new DirectoryInfo(cookiePath);
-                            FileInfo[] files = dir.GetFiles("*.txt");
+                            FileInfo[] files = dir.GetFiles();
                             foreach (FileInfo item in files)
                                 File.Delete(item.FullName);
                         }
                         catch { }
+
+                        try
+                        {
+                            DirectoryInfo dir = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache));
+                            FileInfo[] files = dir.GetFiles();
+                            //LogUtil.Write(dir.ToString() + "--" + files.Length);
+                            foreach (FileInfo item in files)
+                                File.Delete(item.FullName);
+                        }
+                        catch (Exception ex) { LogUtil.Write(ex.Message); }
 
 
                         if (this.InvokeRequired)
@@ -373,7 +383,7 @@ namespace Sort
                 pm.cookie = doc.Cookie;
                 var gifAction = new Action(delegate()
                 {
-                    currentEl.InvokeMember("click");
+                    //currentEl.InvokeMember("click");
 
                     HttpHelper http = new HttpHelper();
                     System.Net.CookieCollection cookies = HttpHelper.StringToCookieCollection(pm.cookie, ".baidu.com");
@@ -384,7 +394,19 @@ namespace Sort
                     string url = string.Concat(pm.usburl, "?", pm.ToString());
                     http.GetHtml(url);
 
-                    
+                    http = new HttpHelper();
+                    http.CookieContainer.Add(cookies);
+                    http.Referer = pm.path;
+                    url = string.Concat("https://sp2.baidu.com/8LUYsjW91Qh3otqbppnN2DJv",
+                        "?",
+                        pm.url.Substring(pm.url.IndexOf("url=")),
+                        "&cb=jQuery110207832295363147099_1465803898681&ie=utf-8&oe=utf-8&format=json&t=", GetUNIX_TIMESTAMP());
+                    http.GetHtml(url);
+
+                    http = new HttpHelper();
+                    http.CookieContainer.Add(cookies);
+                    http.Referer = pm.path;
+                    http.GetHtml(pm.url);
 
                     System.Threading.Thread.Sleep(ran.Next(1,3)*1000);
 
@@ -475,7 +497,7 @@ namespace Sort
 
         public static long GetUNIX_TIMESTAMP()
         {
-            return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
+            return (DateTime.Now.ToUniversalTime().Ticks - 621355968000000000) / 10000;
         }
 
         private void KillMySelf()
