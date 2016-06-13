@@ -123,26 +123,14 @@ namespace Sort
                         //}
 #endif
 
-                        try
-                        {
-                            string cookiePath = @"C:\Documents and Settings\Administrator\Cookies";
-                            DirectoryInfo dir = new DirectoryInfo(cookiePath);
-                            FileInfo[] files = dir.GetFiles();
-                            foreach (FileInfo item in files)
-                                File.Delete(item.FullName);
-                        }
-                        catch { }
 
-                        try
-                        {
-                            DirectoryInfo dir = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.InternetCache));
-                            FileInfo[] files = dir.GetFiles();
-                            //LogUtil.Write(dir.ToString() + "--" + files.Length);
-                            foreach (FileInfo item in files)
-                                File.Delete(item.FullName);
-                        }
-                        catch (Exception ex) { LogUtil.Write(ex.Message); }
+                        //List<string> paths = new List<string>() { 
+                        //@"C:\Documents and Settings\Administrator\Cookies",
+                        //Environment.GetFolderPath(Environment.SpecialFolder.InternetCache),
+                        //@"C:\Documents and Settings\Administrator\UserData",
+                        //@"C:\Documents and Settings\Administrator\Local Settings\Application Data\Microsoft\Internet Explorer"
 
+                        //};
 
                         if (this.InvokeRequired)
                         {
@@ -156,6 +144,34 @@ namespace Sort
                                     GC.WaitForPendingFinalizers();
                                     IntPtr pHandle = GetCurrentProcess();
                                     SetProcessWorkingSetSize(pHandle, -1, -1);
+
+
+
+                                    //foreach (string item in paths)
+                                    //{
+                                        
+                                    //        DirectoryInfo dir = new DirectoryInfo(item);
+                                    //        DirectoryInfo[] infos = dir.GetDirectories();
+                                    //        foreach (DirectoryInfo info in infos)
+                                    //        {
+                                    //            try
+                                    //            {
+                                    //                Directory.Delete(info.FullName, true);
+                                    //            }
+                                    //            catch (Exception ex) { LogUtil.Write(ex.Message); }
+                                    //        }
+
+                                    //        FileInfo[] files = dir.GetFiles("*", SearchOption.AllDirectories);
+                                    //        foreach (FileInfo file in files)
+                                    //        {
+                                    //            try
+                                    //            {
+                                    //                File.Delete(file.FullName);
+                                    //            }
+                                    //            catch (Exception ex) { LogUtil.Write(ex.Message); }
+                                    //        }
+                                    //}
+
                                 }
                                 this.SuspendLayout();
                                 webBrowser1 = new WebBrowser();
@@ -408,13 +424,19 @@ namespace Sort
                     http.Referer = pm.path;
                     http.GetHtml(pm.url);
 
-                    System.Threading.Thread.Sleep(ran.Next(1,3)*1000);
+                    //System.Threading.Thread.Sleep(ran.Next(1,3)*1000);
 
-                    KillIe();
+                    //KillIe();
+#if !DEBUG
+                    System.Diagnostics.Process.Start("sort1.exe");
 
                     Disconn();
 
-                    isProcess = false;
+                    //isProcess = false;
+#endif
+                    Application.Exit();
+
+
 
                 });
                 gifAction.BeginInvoke(null, null);

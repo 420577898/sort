@@ -23,8 +23,8 @@ namespace Sort
 
         public HttpHelper()
         {
-            //this.UserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.2)";
-            this.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36";
+            this.UserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; InfoPath.2)";
+            //this.UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.73 Safari/537.36";
             this.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
             this.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             this.CookieContainer = new CookieContainer();
@@ -385,9 +385,6 @@ namespace Sort
                 httpWebRequest.Method = "GET";
             try
             {
-                //进行响应时间计时
-                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
-                stopwatch.Start();
                 IAsyncResult result = httpWebRequest.BeginGetResponse(null, null);
                 bool bl = result.AsyncWaitHandle.WaitOne(this.Timeout, true);
                 if (!bl)
@@ -395,17 +392,7 @@ namespace Sort
                     throw new WebException("主机连接超时", WebExceptionStatus.Timeout);
                 }
                 httpWebResponse = (HttpWebResponse)httpWebRequest.EndGetResponse(result);
-                stopwatch.Stop();
-                TimeSpan ts = stopwatch.Elapsed;
-                this.TimeUsed = ts.Seconds == 0 ? "" : ts.Seconds + "秒";
-                this.TimeUsed += ts.Milliseconds == 0 ? "" : ts.Milliseconds + "毫秒";
-                //如果单纯用于响应时间计时
-                if (isCountTime)
-                {
-                    httpWebResponse.Close();
-                    httpWebRequest.Abort();
-                    return "";
-                }
+
                 this.ResponseContentLength = httpWebResponse.ContentLength;
                 this.RequestHeader = "GET " + httpWebRequest.RequestUri.PathAndQuery + " HTTP/" + httpWebRequest.ProtocolVersion + "\r\n" + httpWebRequest.Headers.ToString();
                 this.HttpHeader = "HTTP/" + httpWebResponse.ProtocolVersion + " " + Convert.ToInt32(httpWebResponse.StatusCode) + " " + httpWebResponse.StatusCode + "\r\n" + httpWebResponse.Headers.ToString();
@@ -459,97 +446,7 @@ namespace Sort
             }
         }
 
-        public System.Drawing.Bitmap GetImage(string url)
-        {
-            HttpWebRequest httpWebRequest;
-            httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
-            httpWebRequest.CookieContainer = CookieContainer;
-            httpWebRequest.Method = "GET";
-            httpWebRequest.Accept = Accept;
-            httpWebRequest.Referer = Referer;
-            httpWebRequest.UserAgent = UserAgent;
-
-            if (WebProxy != null)
-            {
-                httpWebRequest.Proxy = WebProxy;
-            }
-
-            HttpWebResponse httpWebResponse;
-            httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (Stream responseStream = httpWebResponse.GetResponseStream())
-            {
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(responseStream);
-                return bitmap;
-            }
-        }
-
-        public byte[] GetImageByte(string url)
-        {
-            HttpWebRequest httpWebRequest;
-            httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
-            httpWebRequest.CookieContainer = CookieContainer;
-            httpWebRequest.Method = "GET";
-            httpWebRequest.Accept = Accept;
-            httpWebRequest.Referer = Referer;
-            httpWebRequest.UserAgent = UserAgent;
-
-            if (WebProxy != null)
-            {
-                httpWebRequest.Proxy = WebProxy;
-            }
-
-            HttpWebResponse httpWebResponse;
-            httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (MemoryStream stream = new MemoryStream())
-            {
-                using (Stream responseStream = httpWebResponse.GetResponseStream())
-                {
-
-                    int nnn = 0;
-                    long readcount = 0;
-                    while (nnn < 1000)
-                    {
-                        byte[] buffer = new byte[100 * 1024];
-                        int i = responseStream.Read(buffer, 0, buffer.Length);
-                        if (i == 0)
-                        {
-                            System.Threading.Thread.Sleep(200);
-                            i = responseStream.Read(buffer, 0, buffer.Length);
-                            if (i == 0)
-                                break;
-                        }
-                        stream.Write(buffer, 0, i);
-                        readcount += i;
-                        if (ResponseContentLength > 0 && readcount == ResponseContentLength)
-                        {
-                            break;
-                        }
-                        nnn++;
-                    }
-                }
-                stream.Seek(0, SeekOrigin.Begin);
-                return stream.ToArray();
-            }
-        }
-
-        public static HttpWebResponse GetResponseStatus(string strUrl)
-        {
-            try
-            {
-                HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(strUrl);
-                myRequest.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3";
-                myRequest.Method = "GET";
-                myRequest.AllowAutoRedirect = false;
-                myRequest.KeepAlive = false;
-                myRequest.CookieContainer = new CookieContainer();
-                HttpWebResponse myResponse = (HttpWebResponse)myRequest.GetResponse();
-                return myResponse;
-            }
-            catch (WebException ex)
-            {
-                return (HttpWebResponse)ex.Response;
-            }
-        }
+       
 
         public static bool CheckDomainDns(string url)
         {
