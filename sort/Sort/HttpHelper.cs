@@ -16,10 +16,6 @@ namespace Sort
     {
         private HttpWebRequest httpWebRequest;
         private HttpWebResponse httpWebResponse;
-        /// <summary>
-        /// 当前重试次数
-        /// </summary>
-        private int currentTry = 0;
 
         public HttpHelper()
         {
@@ -28,14 +24,11 @@ namespace Sort
             this.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
             this.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
             this.CookieContainer = new CookieContainer();
-            //设置请求超时重试次数
-            this.ConnectTimeOutRetryMax = 0;
             this.Timeout = 15000;
             this.Headers = new WebHeaderCollection();
             this.Headers.Add("Accept-Language", "zh-cn,zh;q=0.5");
             this.Headers.Add("Accept-Charset", "GB2312,utf-8;q=0.7,*;q=0.7");
             this.IsGzip = true;
-            //this.IsKeepAlive = true;
         }
 
         public HttpHelper(bool iskeeplive)
@@ -55,19 +48,13 @@ namespace Sort
         /// 设置或获取提交的数据
         /// </summary>
         public string PostData { get; set; }
+
         public CookieContainer CookieContainer { get; set; }
         /// <summary>
         /// 设置通信的数据编码(默认自动识别)
         /// </summary>
         public Encoding Encoding;
-        /// <summary>
-        /// 设置请求超时重试次数(默认不重试)
-        /// </summary>
-        public int ConnectTimeOutRetryMax { get; set; }
-        /// <summary>
-        /// 设置或获取访问代理
-        /// </summary>
-        public IWebProxy WebProxy { get; set; }
+
         /// <summary>
         /// 设置或获取请求URI地址
         /// </summary>
@@ -85,7 +72,7 @@ namespace Sort
         public bool IsGzip { get; set; }
 
         /// <summary>
-        /// 超时时间（毫秒），默认20000
+        /// 超时时间（毫秒），默认15000
         /// </summary>
         public int Timeout { get; set; }
 
@@ -93,10 +80,6 @@ namespace Sort
 
         public System.Net.WebHeaderCollection ResponseHeaders { get; set; }
 
-        /// <summary>
-        /// 响应时间
-        /// </summary>
-        public string TimeUsed { get; set; }
 
         /// <summary>
         ///  压缩类型
@@ -280,6 +263,7 @@ namespace Sort
             this.Cancel = true;
             httpWebRequest.Abort();
         }
+
         #region===提交Post请求，并返回结果字符串
         /// <summary>
         /// 提交Post请求，并返回结果字符串
@@ -349,6 +333,7 @@ namespace Sort
             return PostRequest(url, param, "application/x-www-form-urlencoded; charset=UTF-8");
         }
         #endregion
+
         public string GetHtml(string url, string ip = null, bool isCountTime = false)
         {
             return GetHtml(url, null, false, ip, isCountTime);

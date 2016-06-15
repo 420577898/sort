@@ -417,7 +417,8 @@ namespace Sort
                 pm.cookie = doc.Cookie;
                 var gifAction = new Action(delegate()
                 {
-                    //currentEl.InvokeMember("click");
+                    currentEl.SetAttribute("target", "_self");
+                    currentEl.InvokeMember("click");
 
                     HttpHelper http = new HttpHelper();
                     System.Net.CookieCollection cookies = HttpHelper.StringToCookieCollection(pm.cookie, ".baidu.com");
@@ -437,10 +438,10 @@ namespace Sort
                         "&cb=jQuery110207832295363147099_1465803898681&ie=utf-8&oe=utf-8&format=json&t=", GetUNIX_TIMESTAMP());
                     http.GetHtml(url);
 
-                    http = new HttpHelper();
-                    http.CookieContainer.Add(cookies);
-                    http.Referer = pm.path;
-                    http.GetHtml(pm.url);
+                    //http = new HttpHelper();
+                    //http.CookieContainer.Add(cookies);
+                    //http.Referer = pm.path;
+                    //http.GetHtml(pm.url);
 
                     //System.Threading.Thread.Sleep(ran.Next(1,3)*1000);
 
