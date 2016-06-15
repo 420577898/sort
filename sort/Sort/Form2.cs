@@ -86,35 +86,47 @@ namespace Sort
 
             }
 
+            InitAction();
+
+        }
+
+        void InitAction()
+        {
             var action = new Action(delegate()
             {
-                while (true)
-                {
+                //while (true)
+                //{
                     try
                     {
-                        if (isProcess)
-                        {
-                            System.Threading.Thread.Sleep(200);
-                            continue;
-                        }
-                        this.isProcess=true;
+                        //if (isProcess)
+                        //{
+                        //    System.Threading.Thread.Sleep(200);
+                        //    continue;
+                        //}
+                        this.isProcess = true;
                         this.page = 1;
                         this.step = Step.One;
 #if !DEBUG
-
-                        while (true)
-                        {
-                            lock (isConnObj)
-                            {
-                                if (isConn == false)
-                                {
+                        //int count = 0;
+                        //while (true)
+                        //{
+                        //    lock (isConnObj)
+                        //    {
+                        //        if (isConn == false)
+                        //        {
+                        //            if (count > 40)
+                        //            {
+                        //                System.Diagnostics.Process.Start("系统重启.bat");
+                        //                return;
+                        //            }
                                     Dial();
-                                    System.Threading.Thread.Sleep(200);
-                                    continue;
-                                }
-                            }
-                            break;
-                        }
+                        //            count++;
+                        //            System.Threading.Thread.Sleep(500);
+                        //            continue;
+                        //        }
+                        //    }
+                        //    break;
+                        //}
                         //if (isConn == false)
                         //{
                         //    Dial();
@@ -149,7 +161,7 @@ namespace Sort
 
                                     //foreach (string item in paths)
                                     //{
-                                        
+
                                     //        DirectoryInfo dir = new DirectoryInfo(item);
                                     //        DirectoryInfo[] infos = dir.GetDirectories();
                                     //        foreach (DirectoryInfo info in infos)
@@ -194,21 +206,22 @@ namespace Sort
                     }
                     catch (Exception ex)
                     {
-                        this.isProcess=false;
+                        this.isProcess = false;
                         LogUtil.Write(ex.Message);
                     }
-                }
+                //}
 
             });
-            action.BeginInvoke(null,null);
-
+            action.BeginInvoke(null, null);
         }
+
         void timer_Elapsed(object sender, EventArgs e)
         {
             LogUtil.Write("timer_Elapsed");
             timer.Stop();
             Disconn();
             isProcess = false;
+            InitAction();
         }
 
         private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -245,6 +258,7 @@ namespace Sort
                 {
                     Disconn();
                     isProcess = false;
+                    InitAction();
                     return;
                 }
                 kw.InnerText = keyword;
@@ -282,6 +296,7 @@ namespace Sort
                                             if (divParent == null)
                                             {
                                                 isProcess = false;
+                                                InitAction();
                                                 return;
                                             }
                                             string id = divParent.GetAttribute("id");
@@ -299,6 +314,7 @@ namespace Sort
                                     {
                                         Disconn();
                                         isProcess = false;
+                                        InitAction();
                                     }
                             
 #endif
@@ -337,6 +353,7 @@ namespace Sort
                                    if (this.page > 5)
                                    {
                                        isProcess = false;
+                                       InitAction();
                                        return;
                                    }
                                    step = Step.Two;
@@ -347,6 +364,7 @@ namespace Sort
                        }
                        Disconn();
                        isProcess = false;
+                       InitAction();
                    }));
 
                }
@@ -460,8 +478,7 @@ namespace Sort
 
                 // NOTE: The entry MUST be in the phone book before the connection can be dialed.
                 // Begin dialing the connection; this will raise events from the dialer instance.
-                this.handle = this.Dialer.DialAsync();
-
+                this.handle = this.Dialer.Dial();
             }
             catch (Exception ex)
             {
@@ -566,6 +583,7 @@ namespace Sort
                 timer.Stop();
                 Disconn();
                 isProcess = false;
+                InitAction();
             }
         }
     }
