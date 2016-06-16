@@ -352,8 +352,11 @@ namespace Sort
                                    this.page++;
                                    if (this.page > 5)
                                    {
-                                       isProcess = false;
-                                       InitAction();
+                                       System.Diagnostics.Process.Start("sort1.exe");
+
+                                       Disconn();
+
+                                       Application.Exit();
                                        return;
                                    }
                                    step = Step.Two;

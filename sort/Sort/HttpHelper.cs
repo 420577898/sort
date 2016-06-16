@@ -300,17 +300,11 @@ namespace Sort
                 instream = response.GetResponseStream();
                 sr = new StreamReader(instream, encoding);
                 result = sr.ReadToEnd();
-                currentTry = 0;
                 sr.Close();
             }
             catch //(Exception ex)
             {
-                if (currentTry < 3)
-                {
-                    currentTry++;
-                    return PostRequest(url, param, Content_Type);
-                }
-                currentTry = 0;
+                return null;
 
             }
             finally
@@ -415,7 +409,6 @@ namespace Sort
                 {
                     string html = DecodeData(httpWebResponse.Headers["content-type"], stream);
                     httpWebResponse.Close();
-                    currentTry = 0;
                     return html;
                 }
             }
