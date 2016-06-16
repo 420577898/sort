@@ -28,11 +28,21 @@ namespace Sort
             //System.Diagnostics.Process.Start("sort.exe");
             //Application.Exit();
 
-            HttpHelper http = new HttpHelper();
-            http.GetHtml("https://www.baidu.com");
-            cookies = http.Cookies;
+            //HttpHelper http = new HttpHelper();
+            //http.GetHtml("https://www.baidu.com");
+            //cookies = http.Cookies;
 
-            His();
+            //His();
+
+            Index bd = new Index();
+            bd.Keyword = "seo";
+            bd.MatchUrl = "seo.chinaz.com";
+            bd.NextHandler += new Action<string>(delegate(string html) {
+                Find find = new Find(html);
+                find.MatchUrl = bd.MatchUrl;
+                find.Process();
+            });
+            bd.Process();
         }
 
         void His()

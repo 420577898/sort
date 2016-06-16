@@ -466,7 +466,7 @@ namespace Sort
             try
             {
                 ShowMsg("VisitWgif");
-                ParamModel pm = new ParamModel();
+                BdParam pm = new BdParam();
                 pm.q = keyword.kw;
                 pm.rsv_xpath = "h3-a(title)";
                 pm.rsv_height = "107";

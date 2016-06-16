@@ -2,10 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Text.RegularExpressions;
 namespace Sort
 {
-    public class ParamModel
+    public class Find:BaiduBase
+    {
+        public event Action<string> ErrorHandler;
+
+        public event Action<string> PageHandler;
+
+
+        public Find() { }
+
+        public Find(string html) {
+            base.Html = html;
+        }
+
+        public override void Process()
+        {
+            MatchCollection matches = RegexUitl.baiduReg.Matches(base.Html);
+            foreach (Match item in matches)
+            {
+                Match urlMatch = RegexUitl.urlReg.Match(item.Value);
+                if (urlMatch.Success)
+                {
+                    string url = urlMatch.Groups[1].Value.Trim();
+                    url=RegexUitl.htmlReg.Replace(url, "");
+                    url = RegexUitl.specialReg.Replace(url, "");
+                    int pos = url.IndexOf("/");
+                    if (pos == -1)//说明有省略号
+                    {
+                        pos = url.IndexOf("...");
+                        if (pos == -1)
+                        {
+                            ThrowError("");
+                            return;
+                        }
+                    }
+                    else
+                        url = url.Substring(0, pos);
+                    if (string.Compare(url, MatchUrl, true) == 0)//匹配
+                    {
+                        BdParam param = new BdParam();
+                        string divHtml = StringUtil.SubString(item.Value, "<", ">");
+                    }
+                }
+            }
+        }
+
+        void ThrowError(string msg)
+        {
+            if (ErrorHandler != null)
+                ErrorHandler(msg);
+        }
+    }
+
+    public class BdParam
     {
         /// <summary>
         /// 关键词 
