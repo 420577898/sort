@@ -14,8 +14,10 @@ namespace Sort
 
         public Find() { }
 
-        public Find(string html) {
+        public Find(string html,string keyword,string matchUrl) {
             base.Html = html;
+            base.Keyword = keyword;
+            base.MatchUrl = matchUrl;
         }
 
         public override void Process()
@@ -43,11 +45,37 @@ namespace Sort
                         url = url.Substring(0, pos);
                     if (string.Compare(url, MatchUrl, true) == 0)//匹配
                     {
-                        BdParam param = new BdParam();
-                        string divHtml = StringUtil.SubString(item.Value, "<", ">");
+                        Visit(item.Value);
                     }
                 }
             }
+        }
+
+        void Visit(string html)
+        {
+            BdParam param = new BdParam();
+            param.q = base.EncodeKeyword();
+            param.rsv_xpath = "h3-a(title)";
+            param.rsv_height = "110";
+            param.rsv_width = "538";
+            string divHtml = StringUtil.SubString(html, "<", ">");
+            param.rsv_srcid=StringUtil.SubString(divHtml,@"srcid=""",@"""");
+            param.rsv_tpl = StringUtil.SubString(divHtml, @"tpl=""", @"""");
+            string data_click = StringUtil.SubString(divHtml, @"data-click=""{", "}");
+            Match match = RegexUitl.h3Reg.Match(html);
+            if (match.Success==false)
+            {
+                ThrowError("");
+                return ;
+            }
+            string h3Click = StringUtil.SubString(match.Groups[1].Value, @"data-click=""{", "}");
+            h3Click = h3Click.Replace("\n", "").Replace("\t", "").Replace("\r", "");
+            if (!string.IsNullOrEmpty(h3Click))
+                param.h3Click = LitJson.JsonMapper.ToObject<h3Click>(h3Click);
+            param.url = StringUtil.SubString(match.Groups[1].Value, @"href=""",@"""");
+            param.title = StringUtil.SubString(match.Groups[1].Value, @">", @"</a>");
+            param.title = RegexUitl.htmlReg.Replace(param.title, "");
+            
         }
 
         void ThrowError(string msg)
@@ -103,12 +131,6 @@ namespace Sort
 
         public h3Click h3Click { get; set; }
 
-        public divClick divClick { get; set; }
-
-        /// <summary>
-        /// as
-        /// </summary>
-        public string fm { get; set; }
 
         public string rsv_sid { get; set; }
 
@@ -153,7 +175,6 @@ namespace Sort
 
         public string usburl { get; set; }
 
-        public string cookie { get; set; }
 
         public override string ToString()
         {
@@ -172,25 +193,19 @@ namespace Sort
                 "rsv_tpl=" + rsv_tpl,
                 "&",
                 "p1=" + p1,
-                "&",
-                "rsv_srcid=" + this.h3Click.F,
-                "&",
-                "F1=" + this.h3Click.F1,
-                "&",
-                "F2=" + this.h3Click.F2,
-                "&",
-                "F3=" + this.h3Click.F3,
-                "&",
-                "T=" + this.h3Click.T,
-                "&",
-                "y=" + this.h3Click.y,
-                "&",
-                "rsv_bdr=" + this.divClick.rsv_bdr.ToString(),
-                "&",
-                "p5=" + this.divClick.p5.ToString(),
-                "&",
-                "fm=" + fm,
-                "&",
+                "&",(h3Click!=null?
+                "rsv_srcid=" + this.h3Click.F+
+                "&"+
+                "F1=" + this.h3Click.F1+
+                "&"+
+                "F2=" + this.h3Click.F2+
+                "&"+
+                "F3=" + this.h3Click.F3+
+                "&"+
+                "T=" + this.h3Click.T+
+                "&"+
+                "y=" + this.h3Click.y
+                :""),
                 "rsv_sid=" + rsv_sid,
                 "&",
                 "cid=" + cid,
@@ -211,13 +226,6 @@ namespace Sort
                 "&",
                 "path=" + path);
         }
-    }
-
-    public class divClick
-    {
-        public object rsv_bdr { get; set; }
-
-        public object p5 { get; set; }
     }
 
     public class h3Click

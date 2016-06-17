@@ -10,7 +10,7 @@ namespace Sort
     {
         public event Action<string> ErrorHandler;
 
-        public event Action<string> NextHandler;
+        public event Action<string,string,string> NextHandler;
 
         public override void Process()
         {
@@ -43,7 +43,7 @@ namespace Sort
                 return;
             }
             if (NextHandler != null)
-                NextHandler(base.Html);
+                NextHandler(base.Html,base.Keyword,base.MatchUrl);
 
         }
 

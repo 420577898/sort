@@ -476,15 +476,15 @@ namespace Sort
                 pm.rsv_srcid = el.GetAttribute("srcid");
 
                 string divClickStr = el.GetAttribute("data-click");
-                divClick divClick = LitJson.JsonMapper.ToObject<divClick>(divClickStr);
-                pm.divClick = divClick;
+                //divClick divClick = LitJson.JsonMapper.ToObject<divClick>(divClickStr);
+                //pm.divClick = divClick;
 
                 HtmlElement h3_a = el.FirstChild.FirstChild;
                 string h3ClickStr = h3_a.GetAttribute("data-click");
                 h3Click h3Click = LitJson.JsonMapper.ToObject<h3Click>(h3ClickStr);
                 pm.h3Click = h3Click;
 
-                pm.fm = "as";
+                //pm.fm = "as";
                 pm.rsv_sid = doc.InvokeScript("eval", new String[] { "bds.comm.sid" }).ToString();
                 pm.cid = "0";
 
@@ -504,13 +504,13 @@ namespace Sort
 
                 pm.usburl = doc.InvokeScript("eval", new String[] { "bds.comm.ubsurl" }).ToString();
 
-                pm.cookie = doc.Cookie;
+                //pm.cookie = doc.Cookie;
                 var gifAction = new Action(delegate()
                 {
                     HttpHelper http = new HttpHelper();
-                    System.Net.CookieCollection cookies = HttpHelper.StringToCookieCollection(pm.cookie, ".baidu.com");
+                    //System.Net.CookieCollection cookies = HttpHelper.StringToCookieCollection(pm.cookie, ".baidu.com");
 
-                    http.CookieContainer.Add(cookies);
+                    //http.CookieContainer.Add(cookies);
                     http.Referer = pm.path;
                     http.Accept = "image/webp,image/*,*/*;q=0.8";
                     string url = string.Concat(pm.usburl, "?", pm.ToString());
@@ -519,7 +519,7 @@ namespace Sort
 
                     http = new HttpHelper();
                     http.Referer = pm.path;
-                    http.CookieContainer.Add(cookies);
+                    //http.CookieContainer.Add(cookies);
                     http.GetHtml(pm.url);
 
                     currentEl.SetAttribute("target", "_self");

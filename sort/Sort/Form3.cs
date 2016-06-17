@@ -37,9 +37,8 @@ namespace Sort
             Index bd = new Index();
             bd.Keyword = "seo";
             bd.MatchUrl = "seo.chinaz.com";
-            bd.NextHandler += new Action<string>(delegate(string html) {
-                Find find = new Find(html);
-                find.MatchUrl = bd.MatchUrl;
+            bd.NextHandler += new Action<string,string,string>(delegate(string html,string keyword,string matchUrl) {
+                Find find = new Find(html,keyword,matchUrl);
                 find.Process();
             });
             bd.Process();

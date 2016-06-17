@@ -21,5 +21,7 @@ namespace Sort
         public static Regex htmlReg = new Regex(@"<[^>]+>", RegexOptions.IgnoreCase);
 
         public static Regex specialReg = new Regex(@"&[a-z0-9]+;", RegexOptions.IgnoreCase);
+
+        public static Regex h3Reg = new Regex(@"<h3[^>]+class=""t[^""]*""[^>]*>(.*?)</h3>", RegexOptions.IgnoreCase|RegexOptions.Singleline);
     }
 }
