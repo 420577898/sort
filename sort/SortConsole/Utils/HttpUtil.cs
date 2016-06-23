@@ -341,6 +341,7 @@ namespace SortConsole
             httpWebRequest.Referer = Referer;
             httpWebRequest.Accept = Accept;
             httpWebRequest.AllowAutoRedirect = true;
+            ResponseUri = httpWebRequest.RequestUri;
             if (this.IsGzip)
             {
                 httpWebRequest.Headers.Add("Accept-Encoding", "gzip, deflate");

@@ -43,14 +43,20 @@ namespace SortConsole
                 return;
             }
 
-            var nsclick = new Action(delegate()
+            if (InitBdComm()==false)//初始化bds.comm参数
             {
-                Wgif wgif = new Wgif();
-                wgif.ReferHtml = base.Html;
-                wgif.Process();
+                ThrowError("");
+                return;
+            }
+
+            var wgifAction = new Action(delegate()
+            {
+                //Wgif wgif = new Wgif();
+                //wgif.ReferHtml = base.Html;
+                //wgif.Process();
 
             });
-            nsclick.BeginInvoke(null, null);
+            wgifAction.BeginInvoke(null, null);
 
             if (NextHandler != null)
                 NextHandler(base.Html, base.Keyword, base.MatchUrl, base.Url);
@@ -71,7 +77,7 @@ namespace SortConsole
             string matchHtml = match.Groups[1].Value;
             MatchCollection matches = RegexUitl.hideInputReg.Matches(matchHtml);
             StringBuilder str = new StringBuilder("https://www.baidu.com/s?wd=");
-            str.Append(EncodeKeyword());
+            str.Append(Keyword);
             foreach (Match item in matches)
             { 
                 string key=item.Groups[1].Value.Trim();

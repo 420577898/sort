@@ -48,6 +48,8 @@
     <Compile Include="Baidu\BaiduBase.cs" />
     <Compile Include="Baidu\Find.cs" />
     <Compile Include="Baidu\Index.cs" />
+    <Compile Include="Baidu\Model\BdComm.cs" />
+    <Compile Include="Baidu\Model\WgifParam.cs" />
     <Compile Include="Baidu\Wgif.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

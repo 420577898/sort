@@ -35,5 +35,13 @@ namespace SortConsole
         public static Regex seInfoReg = new Regex(@"bds.comm.seinfo\s*=\s*\{(.*?)\}", RegexOptions.IgnoreCase);
 
         public static Regex hrefReg = new Regex(@"href\s*=\s*\""(.*?)\""", RegexOptions.IgnoreCase);
+
+        public static Regex cidReg = new Regex(@"bds.comm.cid\s*=\s*""(.*?)"";", RegexOptions.IgnoreCase);
+
+        public static Regex cgifReg = new Regex(@"bds.comm.cgif\s*=\s*""(.*?)"";", RegexOptions.IgnoreCase);
+
+        public static Regex sidReg = new Regex(@"bds.comm.sid\s*=\s*""(.*?)"";", RegexOptions.IgnoreCase);
+
+        public static Regex muReg = new Regex(@"\s+mu\s*=\s*""(.*?)""", RegexOptions.IgnoreCase);
     }
 }

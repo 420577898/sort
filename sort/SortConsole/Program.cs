@@ -11,7 +11,7 @@ namespace SortConsole
         static void Main(string[] args)
         {
             Index bd = new Index();
-            bd.Keyword = "seo";
+            bd.Keyword = "360医疗保险";
             bd.MatchUrl = "seo.chinaz.com";
             bd.NextHandler += new Action<string, string, string,string>(delegate(string html, string keyword, string matchUrl,string locationUrl)
             {
