@@ -86,7 +86,14 @@ namespace SortConsole
             }
             param.usburl = usburlMatch.Groups[1].Value.Trim();
 
-            param.url = StringUtil.SubString(match.Groups[1].Value, @"href=""",@"""");
+            Match urlMatch = RegexUitl.hrefReg.Match(match.Groups[1].Value);
+            if (urlMatch.Success == false)
+            {
+                ThrowError("");
+                return;
+            }
+            param.url = urlMatch.Groups[1].Value.Trim();
+
             param.title = StringUtil.SubString(match.Groups[1].Value, @">", @"</a>");
             param.title = StringUtil.UrlEncode(RegexUitl.htmlReg.Replace(param.title, "")).Replace("+","%20");
             param.rsv_sid = Cookies["H_PS_PSSID"] != null ? Cookies["H_PS_PSSID"].Value : "";

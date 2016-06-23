@@ -45,10 +45,12 @@ namespace SortConsole
 
             var nsclick = new Action(delegate()
             {
-
+                Wgif wgif = new Wgif();
+                wgif.ReferHtml = base.Html;
+                wgif.Process();
 
             });
-            nsclick
+            nsclick.BeginInvoke(null, null);
 
             if (NextHandler != null)
                 NextHandler(base.Html, base.Keyword, base.MatchUrl, base.Url);

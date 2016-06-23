@@ -19,6 +19,7 @@ namespace SortConsole
                 find.Process();
             });
             bd.Process();
+            Console.ReadKey();
         }
     }
 }

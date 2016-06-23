@@ -31,5 +31,9 @@ namespace SortConsole
         public static Regex ubsurlReg = new Regex(@"bds.comm.ubsurl\s*=\s*""(.*?)"";", RegexOptions.IgnoreCase);
 
         public static Regex nsclickReg = new Regex(@"nsclick.baidu.com""\s*:\s*""(.*?)"",", RegexOptions.IgnoreCase);
+
+        public static Regex seInfoReg = new Regex(@"bds.comm.seinfo\s*=\s*\{(.*?)\}", RegexOptions.IgnoreCase);
+
+        public static Regex hrefReg = new Regex(@"href\s*=\s*\""(.*?)\""", RegexOptions.IgnoreCase);
     }
 }
