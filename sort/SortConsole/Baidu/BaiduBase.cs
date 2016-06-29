@@ -90,6 +90,7 @@ namespace SortConsole
         public bool InitBdComm()
         {
             BdComm = new BdComm();
+            BdComm.encodeurl = EncodeUrl;
             BdComm.path = StringUtil.UrlEncode(EncodeUrl);
 
             Match cidMatch = RegexUitl.cidReg.Match(Html);

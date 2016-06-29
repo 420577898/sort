@@ -25,13 +25,13 @@ namespace SortConsole
             base.GetResult();
             if (string.IsNullOrEmpty(base.Html))
             {
-                ThrowError("");
+                ThrowError("首页获取HTML为空");
                 return;
             }
             base.Url = FormatGetUrl();
             if (string.IsNullOrEmpty(base.Url))
             {
-                ThrowError("");
+                ThrowError("获取首页跳转URL为空");
                 return;
             }
 
@@ -39,24 +39,33 @@ namespace SortConsole
             base.GetResult();
             if (string.IsNullOrEmpty(base.Html))
             {
-                ThrowError("");
+                ThrowError("首页跳转获取HTML为空");
                 return;
             }
 
             if (InitBdComm()==false)//初始化bds.comm参数
             {
-                ThrowError("");
+                ThrowError("初始化bds.comm参数失败");
                 return;
             }
 
             var wgifAction = new Action(delegate()
             {
-                //Wgif wgif = new Wgif();
-                //wgif.ReferHtml = base.Html;
-                //wgif.Process();
+                Wgif wgif = new Wgif(base.Keyword,base.BdComm);
+                wgif.Process();
 
             });
             wgifAction.BeginInvoke(null, null);
+
+            var vgifAction = new Action(delegate()
+            {
+                HttpUtil http = base.CreateHttp();
+                http.Accept = "image/webp,image/*,*/*;q=0.8";
+                http.Referer = BdComm.encodeurl;
+                http.GetHtml(BdComm.cgif);
+
+            });
+            vgifAction.BeginInvoke(null, null);
 
             if (NextHandler != null)
                 NextHandler(base.Html, base.Keyword, base.MatchUrl, base.Url);
