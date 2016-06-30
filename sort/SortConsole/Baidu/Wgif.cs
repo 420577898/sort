@@ -12,7 +12,7 @@ namespace SortConsole
 
         public event Action<string> ErrorHandler;
 
-        public Wgif(string keyword,BdComm bdcomm)
+        public Wgif(string keyword, BdComm bdcomm)
         {
             base.Keyword = keyword;
             base.BdComm = bdcomm;
@@ -88,7 +88,7 @@ namespace SortConsole
             str.Append(BdComm.qid);
             str.Append("&");
 
-            str.Append("rsv_iorr=");
+            str.Append("rsv_iorr="); 
             str.Append(BdComm.SeInfo.rsv_iorr);
             str.Append("&");
 
@@ -110,7 +110,6 @@ namespace SortConsole
 
             str.Append("rsv_did=");
             str.Append(BdComm.rsv_did);
-
             return str.ToString();
         }
 

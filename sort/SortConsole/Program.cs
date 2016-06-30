@@ -19,9 +19,10 @@ namespace SortConsole
 
         static void Start()
         {
-            Dial dial = new Dial();
-            dial.DailCompletedHandle += new Action(delegate
-            {
+            //Dial dial = new Dial();
+            //dial.DailCompletedHandle += new Action(delegate
+            //{
+                //Console.WriteLine("连接成功");
                 Index bd = new Index();
                 bd.Keyword = "360医疗保险";
                 bd.MatchUrl = "abc.com";
@@ -34,13 +35,15 @@ namespace SortConsole
                 });
                 bd.NextHandler += new Action<string, string, string, string>(delegate(string html, string keyword, string matchUrl, string locationUrl)
                 {
-                    DialDisconn disconn = new DialDisconn();
-                    disconn.DisconnHandle += Start;
-                    disconn.Process();
+                    Console.WriteLine("执行成功");
+                    //DialDisconn disconn = new DialDisconn();
+                    //disconn.DisconnHandle += Start;
+                    //disconn.Process();
+                    //Console.WriteLine("已断开");
                 });
                 bd.Process();
-            });
-            dial.Process();
+            //});
+            //dial.Process();
             //Index bd = new Index();
             //bd.Keyword = "360医疗保险";
             //bd.MatchUrl = "abc.com";
