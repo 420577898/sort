@@ -26,6 +26,7 @@ namespace SortConsole
 
                 // NOTE: The entry MUST be in the phone book before the connection can be dialed.
                 // Begin dialing the connection; this will raise events from the dialer instance.
+
                 this.handle = this.Dialer.DialAsync();
             }
             catch (Exception ex)
