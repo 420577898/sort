@@ -49,14 +49,15 @@ namespace SortConsole
                 });
                 bd.NextHandler += new Action<string, string, string, string>(delegate(string html, string keyword, string matchUrl, string locationUrl)
                 {
-                    Console.WriteLine(keyword+"\tOK\tCount:"+count);
                     count++;
-                    System.Threading.Thread.Sleep(ran.Next(3,5)*1000);
+                    Console.WriteLine(keyword+"\tOK\tCount:"+count);
+                    System.Threading.Thread.Sleep(ran.Next(2,4)*1000);
                     DialDisconn disconn = new DialDisconn();
                     disconn.handle = dial.handle;
                     disconn.DisconnHandle += Start;
                     disconn.Process();
                     Console.WriteLine("已断开");
+                    Console.WriteLine("");
                 });
                 bd.Process();
             });

@@ -42,13 +42,16 @@ namespace SortConsole
         void MergeCookie(CookieCollection cookies)
         {
             //特殊处理H_PS_645EC
-            Match match = RegexUitl.rsvtReg.Match(Html);
-            if (match.Success)
+            if (!string.IsNullOrEmpty(Html))
             {
-                if (Cookies["H_PS_645EC"] != null)
-                    Cookies["H_PS_645EC"].Value = match.Groups[1].Value.Trim();
-                else
-                    Cookies.Add(new Cookie("H_PS_645EC", match.Groups[1].Value.Trim(), "/", "www.baidu.com"));
+                Match match = RegexUitl.rsvtReg.Match(Html);
+                if (match.Success)
+                {
+                    if (Cookies["H_PS_645EC"] != null)
+                        Cookies["H_PS_645EC"].Value = match.Groups[1].Value.Trim();
+                    else
+                        Cookies.Add(new Cookie("H_PS_645EC", match.Groups[1].Value.Trim(), "/", "www.baidu.com"));
+                }
             }
 
             foreach (Cookie item in cookies)
