@@ -51,7 +51,7 @@ namespace SortConsole
                 {
                     count++;
                     Console.WriteLine(keyword+"\tOK\tCount:"+count);
-                    System.Threading.Thread.Sleep(ran.Next(2,4)*1000);
+                    System.Threading.Thread.Sleep(ran.Next(10,4)*1000);
                     DialDisconn disconn = new DialDisconn();
                     disconn.handle = dial.handle;
                     disconn.DisconnHandle += Start;
